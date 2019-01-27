@@ -1,6 +1,7 @@
 """
 Synthesizes speech from the input string of text.
 """
+import time
 from io import BytesIO
 
 from google.cloud import texttospeech
@@ -23,23 +24,29 @@ audio_config = texttospeech.types.AudioConfig(
 )
 
 
-def text_to_speech_mp3(text, mp3_path):
+def text_to_speech_mp3(paragraphs, mp3_path):
+    start = time.time()
     client = texttospeech.TextToSpeechClient.from_service_account_json(CREDS_JSON)
-    text_batches = batch(text, MAX_REQUEST_LENGTH)
     speech_audio = None
-    # TODO - split this up based on paragraph, end of sentence, commas
-    # and use pydub to insert pauses where appropriate
-    # Add tokens upstream and interpret them here.
-    for text_batch in text_batches:
-        mp3_bytes_file = text_to_mp3_bytes(client, text_batch)
-        audio_segment = AudioSegment.from_mp3(mp3_bytes_file)
-        if speech_audio:
-            speech_audio += audio_segment
-        else:
-            speech_audio = audio_segment
+    half_sec_pause = AudioSegment.silent(duration=500)
+    num_paras = len(paragraphs) - 1
+    for counter, paragraph in enumerate(paragraphs):
+        print(f'\tTranslating paragraph {counter} / {num_paras}')
+        text_batches = batch(paragraph, MAX_REQUEST_LENGTH)
+        for text_batch in text_batches:
+            mp3_bytes_file = text_to_mp3_bytes(client, text_batch)
+            audio_segment = AudioSegment.from_mp3(mp3_bytes_file)
+            if speech_audio:
+                speech_audio += audio_segment
+            else:
+                speech_audio = audio_segment
+
+        # Add a 0.5s pause after a paragraph
+        speech_audio += half_sec_pause
 
     speech_audio.export(mp3_path, format='mp3')
-    print(f'Audio content written to file \"{mp3_path}\"')
+    seconds = int(time.time() - start)
+    print(f'Audio content written to file \"{mp3_path}\" - took {seconds}s')
 
 def text_to_mp3_bytes(client, text):
     assert len(text) <= 5000
@@ -48,7 +55,6 @@ def text_to_mp3_bytes(client, text):
     return BytesIO(response.audio_content)
 
 
-# TODO - modify batching to split on whitespace rather than anywhere
 def batch(iterable, n=1):
     l = len(iterable)
     for ndx in range(0, l, n):

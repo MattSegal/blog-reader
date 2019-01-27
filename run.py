@@ -5,8 +5,10 @@ from slugify import slugify
 import scrapers
 from tts import text_to_speech_mp3
 
+IGNORE_CACHE = False
 CHANNELS = [
-    ('Slate Star Codex', scrapers.ssc),
+    ('Local Posts', scrapers.posts),
+    # ('Slate Star Codex', scrapers.ssc),
 ]
 
 
@@ -26,23 +28,24 @@ def main():
         print(f'\nTranslating posts from {channel_name}\n')
         # content, title, author, posted_at, channel_name
         for post in scraper.posts:
-            text = get_post_text(post)
+            paragraphs = add_intro_paragraph(post)
             filename = slugify(post['title']) + '.mp3'
             path = os.path.join(channel_dir, filename)
             title = post['title']
-            if not os.path.exists(path):
+            if not os.path.exists(path) or IGNORE_CACHE:
                 print(f'Translating {title} into {filename}')
-                text_to_speech_mp3(text, path)
+                text_to_speech_mp3(paragraphs, path)
             else:
                 print(f'Translation for {title} already exists.')
 
 
-def get_post_text(post):
-    return (
+def add_intro_paragraph(post):
+    start = (
         '{title}. '
         'This article, written by {author}, was posted on {channel_name} on {posted_at}. '
-        'Let\'s begin. {content}'
+        'Let\'s begin.'
     ).format(**post)
+    return [start, *post['content']]
 
 
 if __name__ == '__main__':
