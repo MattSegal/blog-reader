@@ -1,5 +1,6 @@
 *.pyc
 *secret*
-media/
+public/
 env/
 posts/
+cache/
