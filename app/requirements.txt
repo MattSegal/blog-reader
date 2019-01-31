@@ -1,0 +1,36 @@
+# Backend
+django
+psycopg2-binary
+celery[redis]
+raven
+gunicorn
+social-auth-app-django
+
+# Frontend
+whitenoise
+
+# Admin
+django-extensions
+ipython
+
+# Dev
+django-debug-toolbar
+flake8
+isort
+watchdog
+
+# Scraping
+requests
+goose3
+beautifulsoup4
+html5lib
+
+# Translating
+google-cloud-texttospeech
+pydub
+
+# Uploading
+boto3
+feedgen
+python-slugify
+django-storages

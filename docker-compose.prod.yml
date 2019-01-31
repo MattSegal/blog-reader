@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+    redis:
+        image: redis
+    worker:
+        image: localhost:5000/reader
+        command: make worker-prod
+        environment:
+            - CELERY_HOST=redis
+            - REDIS_HOST=redis
+            - DJANGO_SETTINGS_MODULE=reader.settings.prod
+            - READER_DB_NAME=reader
+            - READER_DB_PORT=5432
+            - READER_DB_HOST=$DOCKERHOST
+            # Postgres convenience
+            - PGHOST=$DOCKERHOST
+            - PGDATABASE=$READER_DB_NAME
+            - PGUSER=$READER_DB_USER
+            - PGPASSWORD=$READER_DB_PASSWORD
+            # Papertrail
+            - PAPERTRAIL_HOSTNAME=Reader
+            - PAPERTRAIL_URL=$READER_PAPERTRAIL_URL
+            - PAPERTRAIL_PORT=$READER_PAPERTRAIL_PORT
+            # Pass-through
+            - DJANGO_SECRET_KEY
+            - READER_RAVEN_DSN
+            - READER_DB_USER
+            - READER_DB_PASSWORD
+            - AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY
+            - GOOGLE_SERVICE_ACCOUNT
+    web:
+        image: localhost:5000/reader
+        command: make web-prod
+        ports:
+            - 8000:8000
+        volumes:
+          - local-reader:/reader/
+        environment:
+            - CELERY_HOST=redis
+            - REDIS_HOST=redis
+            - DJANGO_SETTINGS_MODULE=reader.settings.prod
+            - READER_DB_NAME=reader
+            - READER_DB_PORT=5432
+            - READER_DB_HOST=$DOCKERHOST
+            # Postgres convenience
+            - PGHOST=$DOCKERHOST
+            - PGDATABASE=$READER_DB_NAME
+            - PGUSER=$READER_DB_USER
+            - PGPASSWORD=$READER_DB_PASSWORD
+            # Papertrail
+            - PAPERTRAIL_HOSTNAME=MemoriesNinja
+            - PAPERTRAIL_URL=$READER_PAPERTRAIL_URL
+            - PAPERTRAIL_PORT=$READER_PAPERTRAIL_PORT
+            # Pass-through
+            - DJANGO_SECRET_KEY
+            - READER_RAVEN_DSN
+            - READER_DB_USER
+            - READER_DB_PASSWORD
+            - GOOGLE_OAUTH2_KEY
+            - GOOGLE_OAUTH2_SECRET

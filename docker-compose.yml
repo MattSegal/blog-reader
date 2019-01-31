@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+    database:
+        image: postgres
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+    redis:
+        image: redis
+    worker:
+        image: localhost:5000/reader
+        command: make worker-local
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - ./app:/app
+        links:
+            - database
+            - redis
+        environment:
+            READER_DB_NAME: postgres
+            READER_DB_USER: postgres
+            READER_DB_PASSWORD: password
+            READER_DB_HOST: database
+            READER_DB_PORT: 5432
+            CELERY_HOST: redis
+            REDIS_HOST: redis
+            DJANGO_SETTINGS_MODULE: reader.settings.dev
+            # Read from .env
+            AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+            AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+            GOOGLE_SERVICE_ACCOUNT: $GOOGLE_SERVICE_ACCOUNT
+    web:
+        image: localhost:5000/reader
+        command: ./manage.py runserver 0.0.0.0:8000
+        ports:
+            - 8000:8000
+        volumes:
+          - ./app:/app
+        links:
+            - database
+            - redis
+            - worker
+        environment:
+            READER_DB_NAME: postgres
+            READER_DB_USER: postgres
+            READER_DB_PASSWORD: password
+            READER_DB_HOST: database
+            READER_DB_PORT: 5432
+            CELERY_HOST: redis
+            REDIS_HOST: redis
+            DJANGO_SETTINGS_MODULE: reader.settings.dev
+            # Read from .env
+            GOOGLE_OAUTH2_KEY: $GOOGLE_OAUTH2_KEY
+            GOOGLE_OAUTH2_SECRET: $GOOGLE_OAUTH2_SECRET
+
+volumes:
+    postgres-data:

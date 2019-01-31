@@ -1,9 +1,0 @@
-google-cloud-texttospeech
-requests
-beautifulsoup4
-html5lib
-python-slugify
-pydub
-goose3
-feedgen
-boto3

@@ -4,3 +4,11 @@ public/
 env/
 posts/
 cache/
+env/
+.env
+*.sqlite3
+.vagrant
+*.log
+*.retry
+*.pid
+*.db

@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blog Reader</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+  {% block head %}
+  {% endblock %}
+</head>
+<body>
+  <header>
+    <h1>Blog Reader</h1>
+    <div>
+      {% if user.is_authenticated %}
+        <h3>{{ user.username }}</h3>
+      {% else %}
+        <a href="{% url "social:begin" "google-oauth2" %}">
+          <img src="{% static 'img/google_signin.png' %}">
+        </a>
+      {% endif %}
+    </div>
+  </header>
+  <div class="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+</body>
+</html>
