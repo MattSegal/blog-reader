@@ -34,9 +34,7 @@ services:
         image: localhost:5000/reader
         command: make web-prod
         ports:
-            - 8000:8000
-        volumes:
-          - local-reader:/reader/
+            - 8005:8005
         environment:
             - CELERY_HOST=redis
             - REDIS_HOST=redis
