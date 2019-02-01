@@ -12,7 +12,6 @@ from google.oauth2.service_account import Credentials
 from pydub import AudioSegment
 
 
-GOOGLE_SERVICE_ACCOUNT = os.environ.get('GOOGLE_SERVICE_ACCOUNT')
 MAX_REQUEST_LENGTH = 5000
 VOICE_NAME = 'en-AU-Wavenet-B'
 AUDIO_ENCODING = texttospeech.enums.AudioEncoding.MP3
@@ -31,7 +30,7 @@ audio_config = texttospeech.types.AudioConfig(
 
 def text_to_speech_mp3(article, out_file):
     paragraphs = parse_paragraphs(article)
-    client = get_client()
+    client = texttospeech.TextToSpeechClient()
     speech_audio = None
     half_sec_pause = AudioSegment.silent(duration=500)
     num_paras = len(paragraphs) - 1
@@ -49,15 +48,6 @@ def text_to_speech_mp3(article, out_file):
         speech_audio += half_sec_pause
 
     speech_audio.export(out_file, format='mp3')
-
-
-def get_client():
-    """Perform magic dance for Google to authenticate the text-to-speech client"""
-    creds_json_text = base64.b64decode(GOOGLE_SERVICE_ACCOUNT.encode('utf-8')).decode('utf-8')
-    creds_data = json.loads(creds_json_text)
-    creds = Credentials.from_service_account_info(creds_data)
-    client = texttospeech.TextToSpeechClient(credentials=creds)
-    return client
 
 
 def text_to_mp3_bytes(client, text):

@@ -6,7 +6,10 @@ services:
     worker:
         image: localhost:5000/reader
         command: make worker-prod
+        volumes:
+            - /root/creds:/creds
         environment:
+            - GOOGLE_APPLICATION_CREDENTIALS=/creds/google_service_account.secret.json
             - CELERY_HOST=redis
             - REDIS_HOST=redis
             - DJANGO_SETTINGS_MODULE=reader.settings.prod
@@ -29,13 +32,16 @@ services:
             - READER_DB_PASSWORD
             - AWS_ACCESS_KEY_ID
             - AWS_SECRET_ACCESS_KEY
-            - GOOGLE_SERVICE_ACCOUNT
+
     web:
         image: localhost:5000/reader
         command: make web-prod
+        volumes:
+            - /root/creds:/creds
         ports:
             - 8005:8005
         environment:
+            - GOOGLE_APPLICATION_CREDENTIALS=/creds/google_service_account.secret.json
             - CELERY_HOST=redis
             - REDIS_HOST=redis
             - DJANGO_SETTINGS_MODULE=reader.settings.prod
@@ -60,4 +66,3 @@ services:
             - GOOGLE_OAUTH2_SECRET
             - AWS_ACCESS_KEY_ID
             - AWS_SECRET_ACCESS_KEY
-            - GOOGLE_SERVICE_ACCOUNT
