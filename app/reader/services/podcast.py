@@ -21,11 +21,13 @@ def write_article(article, gen):
     entry.enclosure(file_url, str(len(article.audio_file)), 'audio/mpeg')
     entry.title(article.title)
     entry.description(article.description)
-    entry.published(article.posted_at.isoformat())
     entry.author({'name': article.author})
     entry.link({'href': article.url})
     entry.ttl(24 * 60 * 60)  # Minutes
-
+    if article.posted_at:
+        entry.published(article.posted_at.isoformat())
+    else:
+        entry.published(article.requested_at.isoformat())
 
 def write_meta_info(gen):
     gen.title('Blog to Speech')
