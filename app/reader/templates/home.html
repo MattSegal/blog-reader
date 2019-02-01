@@ -19,7 +19,7 @@
 <div class="articles">
     {% for article in articles %}
         <div class="article">
-            {{article.get_status }} - {{ article.get_title }}
+            {{article.get_status }} - {{ article.get_title }} {% if article.site %}({{ article.site.domain }}){% endif %}
         </div>
     {% endfor %}
 </div>

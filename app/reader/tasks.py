@@ -21,12 +21,15 @@ def scrape_article(article_pk):
     article = Article.objects.get(pk=article_pk)
 
     domain = urlparse(article.url).netloc
-    try:
-        site = Site.objects.get(domain=domain)
-    except Site.DoesNotExist:
-        site = None
+    site, _ = Site.objects.get_or_create(
+        domain=domain,
+        defaults={
+            'default_author': 'unknown author',
+            'name': domain,
+        }
+    )
+    article_data = scraper.scrape(article, site)
 
-    article_data = scraper.scrape(article)
     log.info(f'Saving scraped data for Article[{article_pk}]')
     Article.objects.filter(pk=article_pk).update(
         scraped_at=timezone.now(),

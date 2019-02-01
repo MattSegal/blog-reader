@@ -75,13 +75,19 @@ def batch(iterable, n=1):
 
 def parse_paragraphs(article):
     body = article.content.split('\n')
-    intro = 'This is the intro.'
-    # intro = (
-    #     '{title}. '
-    #     'This article, written by {author}, was posted on {channel_name} on {posted_at}. '
-    #     'Let\'s begin.'
-    # ).format(**post)
+    if article.posted_at:
+        posted_time = article.posted_at.strftime('%B %-d, %Y')
+    else:
+        posted_time = 'an unknown time.'
+
+    intro = (
+        f'{article.title}. '
+        f'This article, written by {article.author}, '
+        f'was published on {article.site.name} '
+        f'on {posted_time}. Let\'s begin.'
+    )
     outro = (
-        'This is the outro.'
+        f'That\'s the end of {article.title}, by {article.author}. '
+        'I hope you enjoyed this podcast. See you next time.'
     )
     return [intro, *body, outro]
