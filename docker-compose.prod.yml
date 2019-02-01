@@ -19,7 +19,7 @@ services:
             - PGUSER=$READER_DB_USER
             - PGPASSWORD=$READER_DB_PASSWORD
             # Papertrail
-            - PAPERTRAIL_HOSTNAME=Reader
+            - PAPERTRAIL_HOSTNAME=BlogReader
             - PAPERTRAIL_URL=$READER_PAPERTRAIL_URL
             - PAPERTRAIL_PORT=$READER_PAPERTRAIL_PORT
             # Pass-through
@@ -50,7 +50,7 @@ services:
             - PGUSER=$READER_DB_USER
             - PGPASSWORD=$READER_DB_PASSWORD
             # Papertrail
-            - PAPERTRAIL_HOSTNAME=MemoriesNinja
+            - PAPERTRAIL_HOSTNAME=BlogReader
             - PAPERTRAIL_URL=$READER_PAPERTRAIL_URL
             - PAPERTRAIL_PORT=$READER_PAPERTRAIL_PORT
             # Pass-through
@@ -60,3 +60,6 @@ services:
             - READER_DB_PASSWORD
             - GOOGLE_OAUTH2_KEY
             - GOOGLE_OAUTH2_SECRET
+            - AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY
+            - GOOGLE_SERVICE_ACCOUNT
