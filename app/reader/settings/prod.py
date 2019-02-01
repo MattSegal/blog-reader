@@ -9,7 +9,7 @@ ALLOWED_HOSTS = [
     'localhost',
 ]
 
-AWS_STORAGE_BUCKET_NAME = ''
+AWS_STORAGE_BUCKET_NAME = 'blog-to-speech'
 
 # Logging
 LOGGING = {

@@ -4,10 +4,11 @@ Synthesizes speech from the input string of text.
 import os
 import time
 from io import BytesIO
-import tempfile
 import base64
+import json
 
 from google.cloud import texttospeech
+from google.oauth2.service_account import Credentials
 from pydub import AudioSegment
 
 
@@ -35,7 +36,6 @@ def text_to_speech_mp3(article, out_file):
     half_sec_pause = AudioSegment.silent(duration=500)
     num_paras = len(paragraphs) - 1
     for counter, paragraph in enumerate(paragraphs):
-        print(f'\tTranslating paragraph {counter} / {num_paras}')
         text_batches = batch(paragraph, MAX_REQUEST_LENGTH)
         for text_batch in text_batches:
             mp3_bytes_file = text_to_mp3_bytes(client, text_batch)
@@ -52,16 +52,13 @@ def text_to_speech_mp3(article, out_file):
 
 
 def get_client():
-    """This melts my brain, I hate this."""
+    """Perform magic dance for Google to authenticate the text-to-speech client"""
     creds_json_text = base64.b64decode(GOOGLE_SERVICE_ACCOUNT.encode('utf-8')).decode('utf-8')
-    with tempfile.NamedTemporaryFile(mode='w', delete=False) as tf:
-        path = tf.name
-        print(creds_json_text)
-        tf.write(creds_json_text.strip())
-
-    client = texttospeech.TextToSpeechClient.from_service_account_json(path)
-    os.remove(path)
+    creds_data = json.loads(creds_json_text)
+    creds = Credentials.from_service_account_info(creds_data)
+    client = texttospeech.TextToSpeechClient(credentials=creds)
     return client
+
 
 def text_to_mp3_bytes(client, text):
     assert len(text) <= 5000

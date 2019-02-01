@@ -8,4 +8,4 @@ STATIC_URL = '/static/'
 
 ALLOWED_HOSTS = ['*']
 
-AWS_STORAGE_BUCKET_NAME = ''
+AWS_STORAGE_BUCKET_NAME = 'blog-to-speech-test'

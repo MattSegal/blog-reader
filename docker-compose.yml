@@ -54,6 +54,9 @@ services:
             # Read from .env
             GOOGLE_OAUTH2_KEY: $GOOGLE_OAUTH2_KEY
             GOOGLE_OAUTH2_SECRET: $GOOGLE_OAUTH2_SECRET
+            AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+            AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+            GOOGLE_SERVICE_ACCOUNT: $GOOGLE_SERVICE_ACCOUNT
 
 volumes:
     postgres-data:

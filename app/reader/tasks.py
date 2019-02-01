@@ -6,8 +6,10 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.utils import timezone
 from django.utils.text import slugify
+from django.conf import settings
+import boto3
 
-from .services import scraper, translate
+from .services import scraper, translate, podcast
 
 log = get_task_logger(__name__)
 
@@ -32,7 +34,8 @@ def scrape_article(article_pk):
         **article_data,
     )
     log.info(f'Finished scraping Article[{article_pk}]')
-    translate_article.delay(article_pk)
+    if not article.uploaded_at:
+        translate_article.delay(article_pk)
 
 
 @shared_task
@@ -68,12 +71,28 @@ def translate_article(article_pk):
     article.audio_file.name = s3_key
     article.uploaded_at = timezone.now()
     article.save()
-    # update_podcast.delay(article_pk)
+    if not article.manifested_at:
+        update_podcast.delay()
 
 
 @shared_task
 def update_podcast():
+    log.info('Creating new podcast manifest')
+    from .models import Article
+    articles = (
+        Article.objects
+        .filter(uploaded_at__isnull=False)
+        .order_by('requested_at')
+    )
+    bucket = boto3.resource('s3').Bucket(settings.AWS_STORAGE_BUCKET_NAME)
+    text_buffer = BytesIO()
+    podcast.write_manifest(articles, text_buffer)
+    text_buffer.seek(0)
+    s3_key = 'podcast.xml'
     upload_config = {
         'ContentType': 'application/xml',
         'ACL': 'public-read'
     }
+    bucket.upload_fileobj(text_buffer, s3_key, upload_config)
+    log.info('Podcast manifest published.')
+    articles.update(manifested_at=timezone.now())
