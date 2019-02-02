@@ -20,9 +20,9 @@
     {% for article in articles %}
         <div class="article">
             <div class="title">
-                {{ article.get_title|truncatechars:45 }}
+                {{ article.get_title }}
             </div>
-            <div>
+            <div class="details">
                 {{ article.get_status }} {% if article.site %}- {{ article.site.domain }}{% endif %}
             </div>
             <div class="links">
