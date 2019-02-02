@@ -85,6 +85,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_OAUTH2_SECRET')
 SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_EMAILS = [
     'mattdsegal@gmail.com',
     'k.f.pollock@gmail.com',
+    'cameron.bryce01@gmail.com',
+    'shonaalouis@gmail.com',
 ]
 
 AUTH_PASSWORD_VALIDATORS = [

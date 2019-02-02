@@ -19,7 +19,18 @@
 <div class="articles">
     {% for article in articles %}
         <div class="article">
-            {{article.get_status }} - {{ article.get_title }} {% if article.site %}({{ article.site.domain }}){% endif %}
+            <div class="title">
+                {{ article.get_title|truncatechars:45 }}
+            </div>
+            <div>
+                {{ article.get_status }} {% if article.site %}- {{ article.site.domain }}{% endif %}
+            </div>
+            <div class="links">
+                <a href="{{ article.url }}">read</a>
+                {% if article.audio_file %}
+                    <a href="{{ article.audio_file.url }}">listen</a>
+                {% endif %}
+            </div>
         </div>
     {% endfor %}
 </div>
