@@ -9,12 +9,21 @@ def scrape(article, site):
     author = get_author(scraped_data, site)
     article_data = {
         'title': scraped_data.title,
-        'posted_at': scraped_data.publish_date,
+        'posted_at': get_posted_at(scraped_data),
         'description': get_description(scraped_data, site, author),
         'author': author,
         'content': get_content(scraped_data),
     }
     return article_data
+
+
+def get_posted_at(scraped_data):
+    try:
+        posted_at = datetime.strptime(scraped_data.publish_date, '%Y-%m-%dT%H:%M:%S%z')
+    except ValueError, TypeError:
+        posted_at = None
+
+    return posted_at
 
 
 def get_content(scraped_data):
