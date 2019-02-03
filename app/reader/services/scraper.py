@@ -20,7 +20,7 @@ def scrape(article, site):
 def get_posted_at(scraped_data):
     try:
         posted_at = datetime.strptime(scraped_data.publish_date, '%Y-%m-%dT%H:%M:%S%z')
-    except ValueError, TypeError:
+    except (ValueError, TypeError):
         posted_at = None
 
     return posted_at
