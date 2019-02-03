@@ -87,6 +87,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_EMAILS = [
     'k.f.pollock@gmail.com',
     'cameron.bryce01@gmail.com',
     'shonaalouis@gmail.com',
+    'kristian.rodd@gmail.com',
 ]
 
 AUTH_PASSWORD_VALIDATORS = [
