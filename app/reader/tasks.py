@@ -65,7 +65,7 @@ def translate_article(article_pk):
         'ContentType': 'audio/mpeg',
         'ACL': 'public-read'
     }
-    slug = slugify(article.title)
+    slug = slugify(article.title)[:80]
     filename = f'{slug}.mp3'
     s3_key = get_s3_key(article, filename)
     bucket.upload_fileobj(audio_buffer, s3_key, upload_config)
