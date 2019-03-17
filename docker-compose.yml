@@ -8,7 +8,7 @@ services:
     redis:
         image: redis
     worker:
-        image: localhost:5000/reader
+        image: localhost:5000/blog-reader
         command: make worker-local
         build:
             context: .
@@ -33,7 +33,7 @@ services:
             AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
             GOOGLE_APPLICATION_CREDENTIALS: /creds/google_service_account.secret.json
     web:
-        image: localhost:5000/reader
+        image: localhost:5000/blog-reader
         command: ./manage.py runserver 0.0.0.0:8000
         ports:
             - 8000:8000
