@@ -13,3 +13,4 @@ env/
 *.pid
 *.db
 *.sql
+*.sql.gz
